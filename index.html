@@ -7,27 +7,27 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #f4f6f9;
-    --surface: #ffffff;
-    --surface2: #f0f2f5;
-    --surface3: #e4e8ef;
-    --border: #e2e6ed;
-    --border2: #c8d0dc;
-    --accent: #2563eb;
-    --accent2: #1d4ed8;
-    --accent-glow: rgba(37,99,235,0.1);
-    --green: #16a34a;
-    --yellow: #d97706;
-    --red: #dc2626;
-    --purple: #7c3aed;
-    --orange: #ea580c;
-    --text: #111827;
-    --text2: #374151;
-    --text3: #6b7280;
-    --spotnana: #2563eb;
-    --tmc: #7c3aed;
-    --both: #16a34a;
-    --spotnana-tmc: #16a34a;
+    --bg: #eaecf0;
+    --surface: #f5f6f8;
+    --surface2: #ebedf1;
+    --surface3: #dde0e7;
+    --border: #d0d4dd;
+    --border2: #b0b8c8;
+    --accent: #1e3a5f;
+    --accent2: #2a4f82;
+    --accent-glow: rgba(30,58,95,0.1);
+    --green: #166534;
+    --yellow: #92400e;
+    --red: #991b1b;
+    --purple: #5b21b6;
+    --orange: #c2410c;
+    --text: #0a0f1a;
+    --text2: #1a2740;
+    --text3: #445570;
+    --spotnana: #1e3a5f;
+    --tmc: #5b21b6;
+    --both: #166534;
+    --spotnana-tmc: #166534;
     --radius: 8px;
     --radius2: 12px;
   }
@@ -91,7 +91,7 @@
     border-radius: var(--radius);
     cursor: pointer;
     font-size: 13.5px;
-    color: var(--text2);
+    color: #111827;
     transition: all 0.15s;
     user-select: none;
   }
@@ -107,7 +107,7 @@
     color: var(--text3);
     padding: 1px 6px;
     border-radius: 999px;
-    font-family: 'DM Mono', monospace;
+    font-family: 'DM Sans', sans-serif;
   }
   .sidebar-footer {
     margin-top: auto;
@@ -174,11 +174,11 @@
   .task-table { width: 100%; border-collapse: collapse; }
   .task-table th {
     text-align: left;
-    font-size: 11px;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 800;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--text3);
+    color: #111827;
     padding: 8px 12px;
     border-bottom: 1px solid var(--border);
     background: var(--surface);
@@ -192,7 +192,7 @@
     cursor: pointer;
   }
   .task-row:hover { background: var(--surface2); }
-  .task-row.subtask { background: rgba(20,24,32,0.4); }
+  .task-row.subtask { background: transparent; }
   .task-row.subtask:hover { background: var(--surface2); }
   .task-row td { padding: 10px 12px; font-size: 13.5px; vertical-align: middle; }
   
@@ -242,30 +242,32 @@
     white-space: nowrap;
   }
   .badge-dot { width: 5px; height: 5px; border-radius: 50%; }
-  .s-new { background: rgba(100,116,139,0.15); color: #94a3b8; }
-  .s-new .badge-dot { background: #64748b; }
-  .s-inprogress { background: rgba(59,130,246,0.12); color: #60a5fa; }
-  .s-inprogress .badge-dot { background: var(--accent); }
-  .s-onhold { background: rgba(249,115,22,0.12); color: #fb923c; }
-  .s-onhold .badge-dot { background: var(--orange); }
-  .s-blocked { background: rgba(239,68,68,0.12); color: #f87171; }
-  .s-blocked .badge-dot { background: var(--red); }
-  .s-completed { background: rgba(34,197,94,0.12); color: #4ade80; }
-  .s-completed .badge-dot { background: var(--green); }
-  .s-inreview { background: rgba(245,158,11,0.12); color: #fbbf24; }
-  .s-inreview .badge-dot { background: var(--yellow); }
-  .s-canceled { background: rgba(100,116,139,0.1); color: #64748b; text-decoration: line-through; }
-  .s-canceled .badge-dot { background: #475569; }
+  .s-new { background: #0d9488; color: #ffffff; }
+  .s-new .badge-dot { background: #ffffff; }
+  .s-inprogress { background: #2563eb; color: #ffffff; }
+  .s-inprogress .badge-dot { background: #ffffff; }
+  .s-onhold { background: #ea580c; color: #ffffff; }
+  .s-onhold .badge-dot { background: #ffffff; }
+  .s-blocked { background: #dc2626; color: #ffffff; }
+  .s-blocked .badge-dot { background: #ffffff; }
+  .s-completed { background: #16a34a; color: #ffffff; }
+  .s-completed .badge-dot { background: #ffffff; }
+  .s-inreview { background: #ca8a04; color: #ffffff; }
+  .s-inreview .badge-dot { background: #ffffff; }
+  .s-canceled { background: #94a3b8; color: #ffffff; text-decoration: line-through; }
+  .s-canceled .badge-dot { background: #ffffff; }
 
   /* RESPONSIBLE BADGES */
-  .r-spotnana { background: rgba(59,130,246,0.12); color: #60a5fa; border: 1px solid rgba(59,130,246,0.2); }
-  .r-tmc { background: rgba(168,85,247,0.12); color: #c084fc; border: 1px solid rgba(168,85,247,0.2); }
-  .r-both { background: rgba(34,197,94,0.1); color: #4ade80; border: 1px solid rgba(34,197,94,0.2); }
+  .r-spotnana { background: #2563eb; color: #ffffff; border: 1px solid #1d4ed8; font-weight: 600; }
+  .r-tmc { background: #7c3aed; color: #ffffff; border: 1px solid #6d28d9; font-weight: 600; }
+  .r-both { background: #16a34a; color: #ffffff; border: 1px solid #15803d; font-weight: 600; }
 
   .date-chip {
-    font-family: 'DM Mono', monospace;
+    white-space: nowrap;
+    font-family: 'DM Sans', sans-serif;
     font-size: 11.5px;
-    color: var(--text3);
+    color: #111827;
+    font-weight: 700;
   }
   .date-chip.overdue { color: #f87171; }
   .date-chip.soon { color: #fbbf24; }
@@ -273,16 +275,17 @@
   /* TAG AVATARS */
   .tag-group { display: flex; gap: -4px; }
   .avatar-sm {
-    width: 22px;
-    height: 22px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 9px;
-    font-weight: 700;
-    border: 1.5px solid var(--bg);
+    font-size: 11px;
+    font-weight: 800;
+    border: 2px solid #ffffff;
     flex-shrink: 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
   }
 
   /* ADD ROW */
@@ -369,7 +372,7 @@
     display: block;
     font-size: 12px;
     font-weight: 600;
-    color: var(--text2);
+    color: #111827;
     margin-bottom: 6px;
     letter-spacing: 0.02em;
   }
@@ -414,7 +417,7 @@
     padding: 14px;
     font-size: 13.5px;
     line-height: 1.6;
-    color: var(--text2);
+    color: #111827;
     min-height: 80px;
     margin-bottom: 16px;
   }
@@ -457,7 +460,7 @@
   .section-title {
     font-size: 13px;
     font-weight: 600;
-    color: var(--text2);
+    color: #111827;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -468,7 +471,7 @@
     font-size: 11px;
     padding: 1px 7px;
     border-radius: 999px;
-    font-family: 'DM Mono', monospace;
+    font-family: 'DM Sans', sans-serif;
   }
 
   /* ─── PROFILES VIEW ─── */
@@ -491,7 +494,7 @@
     flex-shrink: 0;
   }
   .profile-name { font-weight: 600; font-size: 14px; }
-  .profile-email { font-size: 12px; color: var(--text3); margin-top: 1px; font-family: 'DM Mono', monospace; }
+  .profile-email { font-size: 12px; color: var(--text3); margin-top: 1px; font-family: 'DM Sans', sans-serif; }
   .access-badge {
     display: inline-flex;
     align-items: center;
@@ -548,10 +551,29 @@
     font-size: 12px;
     cursor: pointer;
     transition: all 0.15s;
-    color: var(--text2);
+    color: #111827;
   }
   .tag-option.selected { border-color: var(--accent); color: var(--accent2); background: var(--accent-glow); }
   .tag-option:hover { border-color: var(--border2); }
+
+  /* RESIZABLE COLUMNS */
+  .task-table th {
+    position: relative;
+  }
+  .col-resizer {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 6px;
+    cursor: col-resize;
+    user-select: none;
+    z-index: 3;
+  }
+  .col-resizer:hover, .col-resizer.resizing {
+    background: var(--accent);
+    opacity: 0.5;
+  }
 
   scrollbar-width: thin;
   scrollbar-color: var(--border2) transparent;
@@ -636,7 +658,7 @@
 // ═══════════════════════════════
 //  STATE
 // ═══════════════════════════════
-const COLORS = ['#3b82f6','#a855f7','#22c55e','#f59e0b','#ef4444','#06b6d4','#f97316','#ec4899'];
+const COLORS = ['#1d4ed8','#7c3aed','#15803d','#b45309','#b91c1c','#0e7490','#c2410c','#be185d'];
 const PROJECT_DOTS = ['#3b82f6','#a855f7','#22c55e','#f59e0b','#ef4444'];
 
 let state = {
@@ -655,10 +677,10 @@ let state = {
 // ═══════════════════════════════
 function seedData() {
   state.profiles = [
-    { id: 'u1', name: 'Alex Rivera', email: 'a.rivera@spotnana.com', access: 'full', org: 'Spotnana', color: '#3b82f6', initials: 'AR' },
-    { id: 'u2', name: 'Morgan Chen', email: 'm.chen@spotnana.com', access: 'full', org: 'Spotnana', color: '#06b6d4', initials: 'MC' },
-    { id: 'u3', name: 'Jamie Park', email: 'j.park@tmc.com', access: 'full', org: 'TMC', color: '#a855f7', initials: 'JP' },
-    { id: 'u4', name: 'Taylor Osei', email: 't.osei@tmc.com', access: 'limited', org: 'TMC', color: '#22c55e', initials: 'TO' },
+    { id: 'u1', name: 'Alex Rivera', email: 'a.rivera@spotnana.com', access: 'full', org: 'Spotnana', color: '#1d4ed8', initials: 'AR' },
+    { id: 'u2', name: 'Morgan Chen', email: 'm.chen@spotnana.com', access: 'full', org: 'Spotnana', color: '#0e7490', initials: 'MC' },
+    { id: 'u3', name: 'Jamie Park', email: 'j.park@tmc.com', access: 'full', org: 'TMC', color: '#7c3aed', initials: 'JP' },
+    { id: 'u4', name: 'Taylor Osei', email: 't.osei@tmc.com', access: 'limited', org: 'TMC', color: '#15803d', initials: 'TO' },
   ];
 
   const p1 = 'proj-1';
@@ -780,19 +802,20 @@ function renderTasksView() {
   const tagsHtml = (tags) => (tags||[]).map(tid => {
     const p = getProfile(tid);
     if (!p) return '';
-    return `<div class="avatar-sm" style="background:${p.color}20;color:${p.color};border:1.5px solid var(--bg)" title="${p.name}">${p.initials}</div>`;
+    return `<div class="avatar-sm" style="background:${p.color};color:#ffffff;border:1.5px solid var(--bg)" title="${p.name}">${p.initials}</div>`;
   }).join('');
 
   document.getElementById('main-content').innerHTML = `
-    <table class="task-table">
+    <table class="task-table" id="main-table">
       <thead>
         <tr>
-          <th style="width:36%">Title</th>
-          <th style="width:14%">Status</th>
-          <th style="width:13%">Responsible</th>
-          <th style="width:12%">Due Date</th>
-          <th style="width:13%">Assigned</th>
-          <th style="width:12%"></th>
+          <th style="width:18%" data-col="0">Task<div class="col-resizer"></div></th>
+          <th style="width:28%" data-col="1">Description<div class="col-resizer"></div></th>
+          <th style="width:11%" data-col="2">Status<div class="col-resizer"></div></th>
+          <th style="width:11%" data-col="3">Responsible<div class="col-resizer"></div></th>
+          <th style="width:13%" data-col="4">Due Date<div class="col-resizer"></div></th>
+          <th style="width:10%" data-col="5">Assigned<div class="col-resizer"></div></th>
+          <th style="width:9%"></th>
         </tr>
       </thead>
       <tbody>${rows}</tbody>
@@ -812,7 +835,7 @@ function renderTaskRow(task, isSub) {
   const tags = (task.tags||[]).map(tid => {
     const p = getProfile(tid);
     if (!p) return '';
-    return `<div class="avatar-sm" style="background:${p.color}20;color:${p.color}" title="${p.name}">${p.initials}</div>`;
+    return `<div class="avatar-sm" style="background:${p.color};color:#ffffff" title="${p.name}">${p.initials}</div>`;
   }).join('');
   const dc = dateClass(task.dueDate);
 
@@ -821,12 +844,10 @@ function renderTaskRow(task, isSub) {
       <div class="task-indent" style="${isSub?'padding-left:28px':''}">
         ${isSub ? '<div class="subtask-line show"></div>' : ''}
         ${hasSubs ? `<div class="expand-btn" onclick="toggleExpand(event,'${task.id}')">${isExpanded?'−':'+'}</div>` : '<div style="width:18px;flex-shrink:0"></div>'}
-        <div>
-          <div class="task-title">${task.title}</div>
-          ${task.description ? `<small>${task.description.substring(0,60)}${task.description.length>60?'…':''}</small>` : ''}
-        </div>
+        <div class="task-title">${task.title}</div>
       </div>
     </td>
+    <td style="font-size:12.5px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:0">${task.description ? `${task.description.substring(0,80)}${task.description.length>80?'…':''}` : '<span style="color:var(--text3);font-style:italic">—</span>'}</td>
     <td><span class="badge ${statusClass(task.status)}"><span class="badge-dot"></span>${statusLabel(task.status)}</span></td>
     <td><span class="badge ${responsibleClass(task.responsible)}">${responsibleLabel(task.responsible)}</span></td>
     <td><span class="date-chip ${dc}">${formatDate(task.dueDate)}</span></td>
@@ -849,7 +870,7 @@ function renderProfilesView() {
   const cards = state.profiles.map(p => `
     <div class="profile-card">
       <div class="profile-top">
-        <div class="avatar-lg" style="background:${p.color}20;color:${p.color}">${p.initials}</div>
+        <div class="avatar-lg" style="background:${p.color};color:#ffffff">${p.initials}</div>
         <div>
           <div class="profile-name">${p.name}</div>
           <div class="profile-email">${p.email}</div>
@@ -888,7 +909,7 @@ function openAddTask(parentId=null) {
   const parent = parentId ? state.tasks.find(t => t.id === parentId) : null;
   const tagOptions = state.profiles.map(p => `
     <div class="tag-option" data-uid="${p.id}" onclick="toggleTag(this)">
-      <div class="avatar-sm" style="background:${p.color}20;color:${p.color};width:16px;height:16px;font-size:8px">${p.initials}</div>
+      <div class="avatar-sm" style="background:${p.color};color:#ffffff;width:16px;height:16px;font-size:8px">${p.initials}</div>
       ${p.name}
     </div>`).join('');
 
@@ -992,7 +1013,7 @@ function openTaskDetail(taskId) {
   const tagOptions = state.profiles.map(p => {
     const sel = (task.tags||[]).includes(p.id);
     return `<div class="tag-option ${sel?'selected':''}" data-uid="${p.id}" onclick="toggleTag(this)">
-      <div class="avatar-sm" style="background:${p.color}20;color:${p.color};width:16px;height:16px;font-size:8px">${p.initials}</div>
+      <div class="avatar-sm" style="background:${p.color};color:#ffffff;width:16px;height:16px;font-size:8px">${p.initials}</div>
       ${p.name}
     </div>`;
   }).join('');
@@ -1327,6 +1348,39 @@ function showToast(msg) {
   document.getElementById('toast-container').appendChild(t);
   setTimeout(() => t.remove(), 2500);
 }
+
+
+// ═══════════════════════════════
+//  RESIZABLE COLUMNS
+// ═══════════════════════════════
+function initResizableColumns() {
+  const table = document.querySelector('.task-table');
+  if (!table) return;
+  const resizers = table.querySelectorAll('.col-resizer');
+  resizers.forEach(resizer => {
+    let startX, startWidth, th;
+    resizer.addEventListener('mousedown', e => {
+      th = resizer.parentElement;
+      startX = e.pageX;
+      startWidth = th.offsetWidth;
+      resizer.classList.add('resizing');
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+      e.preventDefault();
+    });
+    function onMouseMove(e) {
+      const newWidth = Math.max(60, startWidth + (e.pageX - startX));
+      th.style.width = newWidth + 'px';
+      th.style.minWidth = newWidth + 'px';
+    }
+    function onMouseUp() {
+      resizer.classList.remove('resizing');
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    }
+  });
+}
+
 
 // ═══════════════════════════════
 //  INIT
