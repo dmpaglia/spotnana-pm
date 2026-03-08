@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Client X PM</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0f14;
+    --surface: #141820;
+    --surface2: #1c2230;
+    --surface3: #242d3d;
+    --border: #2a3448;
+    --border2: #3a4a62;
+    --accent: #3b82f6;
+    --accent2: #60a5fa;
+    --accent-glow: rgba(59,130,246,0.15);
+    --green: #22c55e;
+    --yellow: #f59e0b;
+    --red: #ef4444;
+    --purple: #a855f7;
+    --orange: #f97316;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #64748b;
+    --spotnana: #3b82f6;
+    --tmc: #a855f7;
+    --both: #22c55e;
+    --spotnana-tmc: #22c55e;
+    --radius: 8px;
+    --radius2: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── LAYOUT ─── */
+  .app { display: flex; height: 100vh; overflow: hidden; }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .sidebar-logo {
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .logo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .logo-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+  }
+  .sidebar-section { padding: 12px 12px 4px; }
+  .sidebar-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    padding: 0 8px;
+    margin-bottom: 4px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 13.5px;
+    color: var(--text2);
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active { background: var(--accent-glow); color: var(--accent2); }
+  .nav-item svg { flex-shrink: 0; opacity: 0.7; }
+  .nav-item.active svg { opacity: 1; }
+  .project-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .project-name { flex: 1; truncate: true; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .project-count {
+    font-size: 10px;
+    background: var(--surface3);
+    color: var(--text3);
+    padding: 1px 6px;
+    border-radius: 999px;
+    font-family: 'DM Mono', monospace;
+  }
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .btn-add-project {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px;
+    border-radius: var(--radius);
+    border: 1px dashed var(--border2);
+    background: transparent;
+    color: var(--text3);
+    font-size: 12.5px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-add-project:hover { border-color: var(--accent); color: var(--accent2); }
+
+  /* ─── MAIN ─── */
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+  }
+  .topbar-title { font-size: 16px; font-weight: 600; flex: 1; }
+  .topbar-sub { font-size: 12px; color: var(--text3); }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: var(--radius);
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: var(--accent2); }
+  .btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border); }
+  .btn-ghost:hover { background: var(--surface2); color: var(--text); }
+  .btn-sm { padding: 4px 10px; font-size: 12px; }
+  .btn-icon { padding: 6px; }
+
+  .content { flex: 1; overflow-y: auto; padding: 24px; }
+
+  /* ─── TASK TABLE ─── */
+  .task-table { width: 100%; border-collapse: collapse; }
+  .task-table th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text3);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+  .task-row {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+    cursor: pointer;
+  }
+  .task-row:hover { background: var(--surface2); }
+  .task-row.subtask { background: rgba(20,24,32,0.4); }
+  .task-row.subtask:hover { background: var(--surface2); }
+  .task-row td { padding: 10px 12px; font-size: 13.5px; vertical-align: middle; }
+  
+  .task-indent { display: flex; align-items: center; gap: 6px; }
+  .subtask-line {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    opacity: 0;
+  }
+  .subtask-line.show {
+    opacity: 1;
+    border-left: 1.5px solid var(--border2);
+    border-bottom: 1.5px solid var(--border2);
+    border-radius: 0 0 0 4px;
+    height: 12px;
+  }
+  .expand-btn {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 1px solid var(--border2);
+    background: var(--surface3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    color: var(--text3);
+    font-size: 10px;
+    transition: all 0.15s;
+  }
+  .expand-btn:hover { border-color: var(--accent); color: var(--accent2); }
+
+  .task-title { font-weight: 500; color: var(--text); }
+  .task-title small { display: block; font-size: 11px; color: var(--text3); font-weight: 400; margin-top: 1px; }
+
+  /* STATUS BADGES */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .badge-dot { width: 5px; height: 5px; border-radius: 50%; }
+  .s-new { background: rgba(100,116,139,0.15); color: #94a3b8; }
+  .s-new .badge-dot { background: #64748b; }
+  .s-inprogress { background: rgba(59,130,246,0.12); color: #60a5fa; }
+  .s-inprogress .badge-dot { background: var(--accent); }
+  .s-onhold { background: rgba(249,115,22,0.12); color: #fb923c; }
+  .s-onhold .badge-dot { background: var(--orange); }
+  .s-blocked { background: rgba(239,68,68,0.12); color: #f87171; }
+  .s-blocked .badge-dot { background: var(--red); }
+  .s-completed { background: rgba(34,197,94,0.12); color: #4ade80; }
+  .s-completed .badge-dot { background: var(--green); }
+  .s-inreview { background: rgba(245,158,11,0.12); color: #fbbf24; }
+  .s-inreview .badge-dot { background: var(--yellow); }
+  .s-canceled { background: rgba(100,116,139,0.1); color: #64748b; text-decoration: line-through; }
+  .s-canceled .badge-dot { background: #475569; }
+
+  /* RESPONSIBLE BADGES */
+  .r-spotnana { background: rgba(59,130,246,0.12); color: #60a5fa; border: 1px solid rgba(59,130,246,0.2); }
+  .r-tmc { background: rgba(168,85,247,0.12); color: #c084fc; border: 1px solid rgba(168,85,247,0.2); }
+  .r-both { background: rgba(34,197,94,0.1); color: #4ade80; border: 1px solid rgba(34,197,94,0.2); }
+
+  .date-chip {
+    font-family: 'DM Mono', monospace;
+    font-size: 11.5px;
+    color: var(--text3);
+  }
+  .date-chip.overdue { color: #f87171; }
+  .date-chip.soon { color: #fbbf24; }
+
+  /* TAG AVATARS */
+  .tag-group { display: flex; gap: -4px; }
+  .avatar-sm {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 700;
+    border: 1.5px solid var(--bg);
+    flex-shrink: 0;
+  }
+
+  /* ADD ROW */
+  .add-row td {
+    padding: 6px 12px;
+  }
+  .add-task-inline {
+    background: transparent;
+    border: none;
+    color: var(--text3);
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 0;
+  }
+  .add-task-inline:hover { color: var(--accent2); }
+
+  /* ─── MODAL ─── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    animation: fadeIn 0.15s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius2);
+    width: 100%;
+    max-width: 640px;
+    max-height: 85vh;
+    overflow-y: auto;
+    animation: slideUp 0.2s ease;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+  }
+  .modal-lg { max-width: 780px; }
+  @keyframes slideUp { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+  .modal-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .modal-header-info { flex: 1; }
+  .modal-header h2 { font-size: 17px; font-weight: 600; }
+  .modal-header p { font-size: 12.5px; color: var(--text3); margin-top: 3px; }
+  .modal-close {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text3);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .modal-close:hover { background: var(--surface2); color: var(--text); }
+
+  .modal-body { padding: 20px 24px; }
+  .modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .form-group { margin-bottom: 16px; }
+  .form-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text2);
+    margin-bottom: 6px;
+    letter-spacing: 0.02em;
+  }
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 9px 12px;
+    color: var(--text);
+    font-size: 13.5px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+  .form-textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
+  .form-select option { background: var(--surface2); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* TASK DETAIL MODAL */
+  .detail-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .detail-meta-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 12px;
+  }
+  .detail-meta-item label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); display: block; margin-bottom: 6px; }
+  .detail-desc {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--text2);
+    min-height: 80px;
+    margin-bottom: 16px;
+  }
+  .detail-desc[contenteditable]:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .detail-desc.placeholder { color: var(--text3); font-style: italic; }
+
+  .subtask-mini {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: var(--radius);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    margin-bottom: 6px;
+    font-size: 13px;
+  }
+  .checkbox {
+    width: 14px; height: 14px;
+    border-radius: 3px;
+    border: 1.5px solid var(--border2);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .checkbox.checked { background: var(--accent); border-color: var(--accent); }
+  .checkbox.checked::after { content: '✓'; color: white; font-size: 9px; }
+
+  /* SECTION HEADER */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-count {
+    background: var(--surface3);
+    color: var(--text3);
+    font-size: 11px;
+    padding: 1px 7px;
+    border-radius: 999px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* ─── PROFILES VIEW ─── */
+  .profiles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+  .profile-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius2);
+    padding: 18px;
+    transition: border-color 0.15s;
+  }
+  .profile-card:hover { border-color: var(--border2); }
+  .profile-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .avatar-lg {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .profile-name { font-weight: 600; font-size: 14px; }
+  .profile-email { font-size: 12px; color: var(--text3); margin-top: 1px; font-family: 'DM Mono', monospace; }
+  .access-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .access-full { background: rgba(59,130,246,0.12); color: #60a5fa; }
+  .access-limited { background: rgba(100,116,139,0.12); color: #94a3b8; }
+  .profile-org { font-size: 12px; color: var(--text3); margin-top: 8px; }
+
+  /* ─── EMPTY STATE ─── */
+  .empty-state {
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--text3);
+  }
+  .empty-state svg { opacity: 0.3; margin-bottom: 12px; }
+  .empty-state p { font-size: 14px; }
+
+  /* NOTIFICATION TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--text);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    z-index: 999;
+    animation: toastIn 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  @keyframes toastIn { from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .toast-icon { color: var(--green); }
+
+  /* TAG SELECT */
+  .tag-select-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .tag-option {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: var(--text2);
+  }
+  .tag-option.selected { border-color: var(--accent); color: var(--accent2); background: var(--accent-glow); }
+  .tag-option:hover { border-color: var(--border2); }
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--border2) transparent;
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 999px; }
+
+  .divider { height: 1px; background: var(--border); margin: 16px 0; }
+
+  select option { background: #1c2230; }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-badge">
+        <div class="logo-dot"></div>
+        <span style="color:var(--text)">Client X</span>
+        <span style="color:var(--text3);font-weight:400"> / PM</span>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Navigate</div>
+      <div class="nav-item active" data-view="tasks" onclick="switchView('tasks',this)">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="12" height="12" rx="2"/><line x1="5" y1="6" x2="11" y2="6"/><line x1="5" y1="9" x2="9" y2="9"/></svg>
+        Tasks
+      </div>
+      <div class="nav-item" data-view="profiles" onclick="switchView('profiles',this)">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3 2.7-5 6-5s6 2 6 5"/></svg>
+        Profiles
+      </div>
+    </div>
+
+    <div class="sidebar-section" style="flex:1">
+      <div class="sidebar-label">Projects</div>
+      <div id="project-list"></div>
+    </div>
+
+    <div class="sidebar-footer">
+      <button class="btn-add-project" onclick="openAddProject()">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg>
+        New Project
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div style="flex:1">
+        <div class="topbar-title" id="topbar-title">Loading…</div>
+        <div class="topbar-sub" id="topbar-sub"></div>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="openFilterModal()" id="filter-btn" style="display:none">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 4h12M5 8h6M7 12h2"/></svg>
+        Filter
+      </button>
+      <button class="btn btn-primary btn-sm" onclick="openAddTask()" id="add-task-btn" style="display:none">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg>
+        Add Task
+      </button>
+      <button class="btn btn-primary btn-sm" onclick="openAddProfile()" id="add-profile-btn" style="display:none">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg>
+        Add User
+      </button>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content" id="main-content"></div>
+  </div>
+</div>
+
+<!-- ── MODALS ── -->
+<div id="modal-container"></div>
+<div id="toast-container"></div>
+
+<script>
+// ═══════════════════════════════
+//  STATE
+// ═══════════════════════════════
+const COLORS = ['#3b82f6','#a855f7','#22c55e','#f59e0b','#ef4444','#06b6d4','#f97316','#ec4899'];
+const PROJECT_DOTS = ['#3b82f6','#a855f7','#22c55e','#f59e0b','#ef4444'];
+
+let state = {
+  currentView: 'tasks',
+  currentProjectId: null,
+  expandedTasks: new Set(),
+  projects: [],
+  tasks: [],
+  profiles: [],
+  filterStatus: 'all',
+  filterResponsible: 'all'
+};
+
+// ═══════════════════════════════
+//  PERSISTENCE
+// ═══════════════════════════════
+const STORAGE_KEY = 'spotnana-pm-v1';
+
+function saveToStorage() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      projects: state.projects,
+      tasks: state.tasks,
+      profiles: state.profiles,
+      currentProjectId: state.currentProjectId,
+      currentView: state.currentView,
+      filterStatus: state.filterStatus,
+      filterResponsible: state.filterResponsible,
+      expandedTasks: [...state.expandedTasks],
+    }));
+  } catch(e) { console.warn('Failed to save state', e); }
+}
+
+function loadFromStorage() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    const saved = JSON.parse(raw);
+    state.projects = saved.projects || [];
+    state.tasks = saved.tasks || [];
+    state.profiles = saved.profiles || [];
+    state.currentProjectId = saved.currentProjectId || null;
+    state.currentView = saved.currentView || 'tasks';
+    state.filterStatus = saved.filterStatus || 'all';
+    state.filterResponsible = saved.filterResponsible || 'all';
+    state.expandedTasks = new Set(saved.expandedTasks || []);
+    return true;
+  } catch(e) { console.warn('Failed to load state', e); return false; }
+}
+
+// ═══════════════════════════════
+//  SEED DATA
+// ═══════════════════════════════
+function seedData() {
+  state.profiles = [
+    { id: 'u1', name: 'Alex Rivera', email: 'a.rivera@spotnana.com', access: 'full', org: 'Spotnana', color: '#3b82f6', initials: 'AR' },
+    { id: 'u2', name: 'Morgan Chen', email: 'm.chen@spotnana.com', access: 'full', org: 'Spotnana', color: '#06b6d4', initials: 'MC' },
+    { id: 'u3', name: 'Jamie Park', email: 'j.park@tmc.com', access: 'full', org: 'TMC', color: '#a855f7', initials: 'JP' },
+    { id: 'u4', name: 'Taylor Osei', email: 't.osei@tmc.com', access: 'limited', org: 'TMC', color: '#22c55e', initials: 'TO' },
+  ];
+
+  const p1 = 'proj-1';
+  const p2 = 'proj-2';
+
+  state.projects = [
+    { id: p1, name: 'Client X — Project 1', color: '#3b82f6', createdAt: '2024-01-10' },
+    { id: p2, name: 'Client X — Project 2', color: '#a855f7', createdAt: '2024-02-01' },
+  ];
+
+  state.tasks = [
+    // Project 1
+    { id: 't1', projectId: p1, parentId: null, title: 'API Authentication Setup', description: 'Configure OAuth 2.0 flow between Spotnana and TMC systems. Includes token refresh logic and error handling.', dueDate: '2024-03-15', status: 'completed', responsible: 'spotnana', tags: ['u1','u2'], order: 1 },
+    { id: 't1a', projectId: p1, parentId: 't1', title: 'Register OAuth credentials', description: '', dueDate: '2024-03-10', status: 'completed', responsible: 'spotnana', tags: ['u1'], order: 1 },
+    { id: 't1b', projectId: p1, parentId: 't1', title: 'Test token refresh endpoint', description: '', dueDate: '2024-03-14', status: 'completed', responsible: 'both', tags: ['u2'], order: 2 },
+    { id: 't2', projectId: p1, parentId: null, title: 'PNR Sync Configuration', description: 'Set up bi-directional PNR synchronization including cancellations, modifications, and ticketing events.', dueDate: '2024-04-01', status: 'inprogress', responsible: 'both', tags: ['u1','u3'], order: 2 },
+    { id: 't2a', projectId: p1, parentId: 't2', title: 'Map PNR field schema', description: '', dueDate: '2024-03-20', status: 'completed', responsible: 'spotnana', tags: ['u1'], order: 1 },
+    { id: 't2b', projectId: p1, parentId: 't2', title: 'Configure webhook listeners', description: '', dueDate: '2024-03-28', status: 'inprogress', responsible: 'tmc', tags: ['u3'], order: 2 },
+    { id: 't2c', projectId: p1, parentId: 't2', title: 'End-to-end booking test', description: '', dueDate: '2024-04-01', status: 'new', responsible: 'both', tags: ['u1','u3'], order: 3 },
+    { id: 't3', projectId: p1, parentId: null, title: 'Traveler Profile Mapping', description: '', dueDate: '2024-04-15', status: 'new', responsible: 'tmc', tags: ['u3'], order: 3 },
+    { id: 't4', projectId: p1, parentId: null, title: 'UAT & Sign-Off', description: 'Coordinate user acceptance testing with TMC stakeholders. Document all findings and sign off on go-live readiness.', dueDate: '2024-05-01', status: 'new', responsible: 'both', tags: ['u2','u3'], order: 4 },
+    { id: 't4a', projectId: p1, parentId: 't4', title: 'Prepare test cases', description: '', dueDate: '2024-04-20', status: 'new', responsible: 'spotnana', tags: ['u2'], order: 1 },
+    { id: 't4b', projectId: p1, parentId: 't4', title: 'Schedule UAT sessions', description: '', dueDate: '2024-04-22', status: 'new', responsible: 'tmc', tags: ['u3'], order: 2 },
+    // Project 2
+    { id: 't5', projectId: p2, parentId: null, title: 'Initial Discovery Call', description: '', dueDate: '2024-03-05', status: 'completed', responsible: 'both', tags: ['u2','u4'], order: 1 },
+    { id: 't6', projectId: p2, parentId: null, title: 'Technical Requirements Doc', description: '', dueDate: '2024-03-25', status: 'inreview', responsible: 'spotnana', tags: ['u2'], order: 2 },
+    { id: 't6a', projectId: p2, parentId: 't6', title: 'Draft integration spec', description: '', dueDate: '2024-03-18', status: 'completed', responsible: 'spotnana', tags: ['u2'], order: 1 },
+    { id: 't6b', projectId: p2, parentId: 't6', title: 'TMC review & comments', description: '', dueDate: '2024-03-25', status: 'inreview', responsible: 'tmc', tags: ['u4'], order: 2 },
+    { id: 't7', projectId: p2, parentId: null, title: 'Sandbox Environment Setup', description: '', dueDate: '2024-04-10', status: 'blocked', responsible: 'tmc', tags: ['u4'], order: 3 },
+  ];
+
+  state.currentProjectId = p1;
+}
+
+// ═══════════════════════════════
+//  HELPERS
+// ═══════════════════════════════
+function uid() { return 'id-' + Math.random().toString(36).substr(2,9); }
+
+function statusClass(s) {
+  return { new:'s-new', inprogress:'s-inprogress', onhold:'s-onhold', blocked:'s-blocked', completed:'s-completed', inreview:'s-inreview', canceled:'s-canceled' }[s] || 's-new';
+}
+function statusLabel(s) {
+  return { new:'New', inprogress:'In Progress', onhold:'On Hold', blocked:'Blocked', completed:'Completed', inreview:'In Review', canceled:'Canceled' }[s] || s;
+}
+function responsibleClass(r) {
+  return { spotnana:'r-spotnana', tmc:'r-tmc', both:'r-both' }[r] || 'r-spotnana';
+}
+function responsibleLabel(r) {
+  return { spotnana:'Spotnana', tmc:'TMC', both:'Spotnana &amp; TMC' }[r] || r;
+}
+function formatDate(d) {
+  if (!d) return '—';
+  const dt = new Date(d);
+  return dt.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+}
+function dateClass(d) {
+  if (!d) return '';
+  const dt = new Date(d);
+  const now = new Date();
+  const diff = (dt - now) / (1000*60*60*24);
+  if (diff < 0) return 'overdue';
+  if (diff < 7) return 'soon';
+  return '';
+}
+function getProfile(id) { return state.profiles.find(p => p.id === id); }
+function getProject(id) { return state.projects.find(p => p.id === id); }
+
+// ═══════════════════════════════
+//  RENDER
+// ═══════════════════════════════
+function render() {
+  renderSidebar();
+  if (state.currentView === 'tasks') renderTasksView();
+  else if (state.currentView === 'profiles') renderProfilesView();
+}
+
+function renderSidebar() {
+  const list = document.getElementById('project-list');
+  list.innerHTML = state.projects.map((p, i) => {
+    const count = state.tasks.filter(t => t.projectId === p.id && !t.parentId).length;
+    const active = p.id === state.currentProjectId && state.currentView === 'tasks';
+    return `<div class="nav-item ${active?'active':''}" onclick="selectProject('${p.id}')">
+      <div class="project-dot" style="background:${p.color}"></div>
+      <span class="project-name">${p.name}</span>
+      <span class="project-count">${count}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderTasksView() {
+  document.getElementById('topbar-title').textContent = getProject(state.currentProjectId)?.name || 'Tasks';
+  const taskCount = state.tasks.filter(t => t.projectId === state.currentProjectId && !t.parentId).length;
+  document.getElementById('topbar-sub').textContent = `${taskCount} tasks`;
+  document.getElementById('add-task-btn').style.display = 'flex';
+  document.getElementById('filter-btn').style.display = 'flex';
+  document.getElementById('add-profile-btn').style.display = 'none';
+
+  const projectTasks = state.tasks.filter(t => t.projectId === state.currentProjectId && !t.parentId)
+    .sort((a,b) => a.order - b.order);
+
+  let rows = '';
+  for (const task of projectTasks) {
+    if (state.filterStatus !== 'all' && task.status !== state.filterStatus) continue;
+    if (state.filterResponsible !== 'all' && task.responsible !== state.filterResponsible) continue;
+    rows += renderTaskRow(task, false);
+    if (state.expandedTasks.has(task.id)) {
+      const subs = state.tasks.filter(t => t.parentId === task.id).sort((a,b) => a.order - b.order);
+      for (const sub of subs) rows += renderTaskRow(sub, true);
+      rows += `<tr class="add-row"><td colspan="6" style="padding-left:56px">
+        <button class="add-task-inline" onclick="openAddSubtask('${task.id}')">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg>
+          Add subtask
+        </button>
+      </td></tr>`;
+    }
+  }
+
+  const tagsHtml = (tags) => (tags||[]).map(tid => {
+    const p = getProfile(tid);
+    if (!p) return '';
+    return `<div class="avatar-sm" style="background:${p.color}20;color:${p.color};border:1.5px solid var(--bg)" title="${p.name}">${p.initials}</div>`;
+  }).join('');
+
+  document.getElementById('main-content').innerHTML = `
+    <table class="task-table">
+      <thead>
+        <tr>
+          <th style="width:36%">Title</th>
+          <th style="width:14%">Status</th>
+          <th style="width:13%">Responsible</th>
+          <th style="width:12%">Due Date</th>
+          <th style="width:13%">Assigned</th>
+          <th style="width:12%"></th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div style="padding:12px 12px">
+      <button class="add-task-inline" onclick="openAddTask()">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg>
+        Add task
+      </button>
+    </div>
+  `;
+}
+
+function renderTaskRow(task, isSub) {
+  const hasSubs = !isSub && state.tasks.some(t => t.parentId === task.id);
+  const isExpanded = state.expandedTasks.has(task.id);
+  const tags = (task.tags||[]).map(tid => {
+    const p = getProfile(tid);
+    if (!p) return '';
+    return `<div class="avatar-sm" style="background:${p.color}20;color:${p.color}" title="${p.name}">${p.initials}</div>`;
+  }).join('');
+  const dc = dateClass(task.dueDate);
+
+  return `<tr class="task-row ${isSub?'subtask':''}" onclick="openTaskDetail('${task.id}')">
+    <td>
+      <div class="task-indent" style="${isSub?'padding-left:28px':''}">
+        ${isSub ? '<div class="subtask-line show"></div>' : ''}
+        ${hasSubs ? `<div class="expand-btn" onclick="toggleExpand(event,'${task.id}')">${isExpanded?'−':'+'}</div>` : '<div style="width:18px;flex-shrink:0"></div>'}
+        <div>
+          <div class="task-title">${task.title}</div>
+          ${task.description ? `<small>${task.description.substring(0,60)}${task.description.length>60?'…':''}</small>` : ''}
+        </div>
+      </div>
+    </td>
+    <td><span class="badge ${statusClass(task.status)}"><span class="badge-dot"></span>${statusLabel(task.status)}</span></td>
+    <td><span class="badge ${responsibleClass(task.responsible)}">${responsibleLabel(task.responsible)}</span></td>
+    <td><span class="date-chip ${dc}">${formatDate(task.dueDate)}</span></td>
+    <td><div style="display:flex;gap:3px;flex-wrap:wrap">${tags}</div></td>
+    <td style="text-align:right">
+      <button class="btn btn-ghost btn-sm btn-icon" onclick="event.stopPropagation();openAddSubtask('${task.id}')" title="Add subtask" style="${isSub?'visibility:hidden':''}">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg>
+      </button>
+    </td>
+  </tr>`;
+}
+
+function renderProfilesView() {
+  document.getElementById('topbar-title').textContent = 'Team Profiles';
+  document.getElementById('topbar-sub').textContent = `${state.profiles.length} members`;
+  document.getElementById('add-task-btn').style.display = 'none';
+  document.getElementById('filter-btn').style.display = 'none';
+  document.getElementById('add-profile-btn').style.display = 'flex';
+
+  const cards = state.profiles.map(p => `
+    <div class="profile-card">
+      <div class="profile-top">
+        <div class="avatar-lg" style="background:${p.color}20;color:${p.color}">${p.initials}</div>
+        <div>
+          <div class="profile-name">${p.name}</div>
+          <div class="profile-email">${p.email}</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <span class="access-badge access-${p.access}">${p.access === 'full' ? '● Full Access' : '◌ Limited'}</span>
+        <button class="btn btn-ghost btn-sm" onclick="editProfile('${p.id}')">Edit</button>
+      </div>
+      <div class="profile-org" style="margin-top:8px">🏢 ${p.org}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('main-content').innerHTML = `<div class="profiles-grid">${cards}</div>`;
+}
+
+// ═══════════════════════════════
+//  MODALS
+// ═══════════════════════════════
+function openModal(html) {
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.id = 'modal-overlay';
+  overlay.innerHTML = html;
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+  document.getElementById('modal-container').appendChild(overlay);
+}
+function closeModal() {
+  const overlay = document.getElementById('modal-overlay');
+  if (overlay) overlay.remove();
+}
+
+// ADD / EDIT TASK
+function openAddTask(parentId=null) {
+  const isSubtask = !!parentId;
+  const parent = parentId ? state.tasks.find(t => t.id === parentId) : null;
+  const tagOptions = state.profiles.map(p => `
+    <div class="tag-option" data-uid="${p.id}" onclick="toggleTag(this)">
+      <div class="avatar-sm" style="background:${p.color}20;color:${p.color};width:16px;height:16px;font-size:8px">${p.initials}</div>
+      ${p.name}
+    </div>`).join('');
+
+  openModal(`<div class="modal">
+    <div class="modal-header">
+      <div class="modal-header-info">
+        <h2>${isSubtask ? 'Add Subtask' : 'New Task'}</h2>
+        ${parent ? `<p>Under: ${parent.title}</p>` : `<p>Project: ${getProject(state.currentProjectId)?.name}</p>`}
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Title *</label>
+        <input id="f-title" class="form-input" placeholder="Task title…" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea id="f-desc" class="form-textarea" placeholder="Add details, context, or links…"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select id="f-status" class="form-select">
+            <option value="new">New</option>
+            <option value="inprogress">In Progress</option>
+            <option value="onhold">On Hold</option>
+            <option value="blocked">Blocked</option>
+            <option value="completed">Completed</option>
+            <option value="inreview">In Review</option>
+            <option value="canceled">Canceled</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Responsible</label>
+          <select id="f-resp" class="form-select">
+            <option value="spotnana">Spotnana</option>
+            <option value="tmc">TMC</option>
+            <option value="both">Spotnana &amp; TMC</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Due Date</label>
+        <input id="f-due" type="date" class="form-input" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tag Users</label>
+        <div class="tag-select-grid">${tagOptions}</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveTask(null,'${parentId||''}')">Create Task</button>
+    </div>
+  </div>`);
+}
+
+function openAddSubtask(parentId) {
+  event && event.stopPropagation && event.stopPropagation();
+  openAddTask(parentId);
+}
+
+function saveTask(editId, parentId) {
+  const title = document.getElementById('f-title').value.trim();
+  if (!title) { document.getElementById('f-title').focus(); return; }
+  const tags = [...document.querySelectorAll('.tag-option.selected')].map(el => el.dataset.uid);
+  const task = {
+    id: editId || uid(),
+    projectId: state.currentProjectId,
+    parentId: parentId || null,
+    title,
+    description: document.getElementById('f-desc').value.trim(),
+    dueDate: document.getElementById('f-due').value,
+    status: document.getElementById('f-status').value,
+    responsible: document.getElementById('f-resp').value,
+    tags,
+    order: state.tasks.filter(t => t.projectId === state.currentProjectId && t.parentId === (parentId||null)).length + 1
+  };
+  if (editId) {
+    const idx = state.tasks.findIndex(t => t.id === editId);
+    state.tasks[idx] = task;
+  } else {
+    state.tasks.push(task);
+    if (parentId) state.expandedTasks.add(parentId);
+  }
+  closeModal();
+  saveToStorage();
+  render();
+  showToast('Task saved ✓');
+}
+
+function toggleTag(el) { el.classList.toggle('selected'); }
+
+// TASK DETAIL
+function openTaskDetail(taskId) {
+  const task = state.tasks.find(t => t.id === taskId);
+  if (!task) return;
+  const subs = state.tasks.filter(t => t.parentId === taskId);
+  const isSubtask = !!task.parentId;
+
+  const tagOptions = state.profiles.map(p => {
+    const sel = (task.tags||[]).includes(p.id);
+    return `<div class="tag-option ${sel?'selected':''}" data-uid="${p.id}" onclick="toggleTag(this)">
+      <div class="avatar-sm" style="background:${p.color}20;color:${p.color};width:16px;height:16px;font-size:8px">${p.initials}</div>
+      ${p.name}
+    </div>`;
+  }).join('');
+
+  const subsHtml = subs.length ? subs.map(s => `
+    <div class="subtask-mini">
+      <div class="checkbox ${s.status==='completed'?'checked':''}" onclick="toggleSubComplete('${s.id}')"></div>
+      <span style="flex:1;font-size:13px;${s.status==='completed'?'text-decoration:line-through;color:var(--text3)':""}">${s.title}</span>
+      <span class="badge ${statusClass(s.status)}" style="font-size:10px;padding:2px 6px"><span class="badge-dot"></span>${statusLabel(s.status)}</span>
+    </div>
+  `).join('') : '';
+
+  openModal(`<div class="modal modal-lg">
+    <div class="modal-header">
+      <div class="modal-header-info">
+        <input id="d-title" class="form-input" value="${task.title}" style="font-size:16px;font-weight:600;background:transparent;border-color:transparent;padding:0;margin-bottom:4px" />
+        <p>${isSubtask ? '↳ Subtask' : 'Main Task'} · ${getProject(task.projectId)?.name}</p>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-meta">
+        <div class="detail-meta-item">
+          <label>Status</label>
+          <select id="d-status" class="form-select" style="padding:4px 8px;font-size:12px">
+            <option value="new" ${task.status==='new'?'selected':''}>New</option>
+            <option value="inprogress" ${task.status==='inprogress'?'selected':''}>In Progress</option>
+            <option value="inreview" ${task.status==='inreview'?'selected':''}>In Review</option>
+            <option value="completed" ${task.status==='completed'?'selected':''}>Completed</option>
+            <option value="blocked" ${task.status==='blocked'?'selected':''}>Blocked</option>
+          </select>
+        </div>
+        <div class="detail-meta-item">
+          <label>Responsible</label>
+          <select id="d-resp" class="form-select" style="padding:4px 8px;font-size:12px">
+            <option value="spotnana" ${task.responsible==='spotnana'?'selected':''}>Spotnana</option>
+            <option value="tmc" ${task.responsible==='tmc'?'selected':''}>TMC</option>
+            <option value="both" ${task.responsible==='both'?'selected':''}>Both</option>
+            
+          </select>
+        </div>
+        <div class="detail-meta-item">
+          <label>Due Date</label>
+          <input id="d-due" type="date" class="form-input" value="${task.dueDate||''}" style="padding:4px 8px;font-size:12px" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea id="d-desc" class="form-textarea" placeholder="Add a description, notes, or links…">${task.description||''}</textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Tag Users</label>
+        <div class="tag-select-grid">${tagOptions}</div>
+      </div>
+
+      ${!isSubtask ? `
+      <div class="divider"></div>
+      <div class="section-header">
+        <div class="section-title">
+          Subtasks
+          <span class="section-count">${subs.length}</span>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="closeModal();openAddTask('${task.id}')">+ Add Subtask</button>
+      </div>
+      ${subsHtml || '<div style="color:var(--text3);font-size:13px;padding:8px 0">No subtasks yet.</div>'}
+      ` : ''}
+    </div>
+    <div class="modal-footer" style="justify-content:space-between">
+      <button class="btn btn-ghost" style="color:#f87171;border-color:rgba(239,68,68,0.3)" onclick="deleteTask('${task.id}')">Delete</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="updateTask('${task.id}')">Save Changes</button>
+      </div>
+    </div>
+  </div>`);
+}
+
+function updateTask(taskId) {
+  const task = state.tasks.find(t => t.id === taskId);
+  if (!task) return;
+  task.title = document.getElementById('d-title').value.trim() || task.title;
+  task.description = document.getElementById('d-desc').value.trim();
+  task.status = document.getElementById('d-status').value;
+  task.responsible = document.getElementById('d-resp').value;
+  task.dueDate = document.getElementById('d-due').value;
+  task.tags = [...document.querySelectorAll('.tag-option.selected')].map(el => el.dataset.uid);
+  closeModal();
+  saveToStorage();
+  render();
+  showToast('Changes saved ✓');
+}
+
+function deleteTask(taskId) {
+  if (!confirm('Delete this task and its subtasks?')) return;
+  state.tasks = state.tasks.filter(t => t.id !== taskId && t.parentId !== taskId);
+  closeModal();
+  saveToStorage();
+  render();
+  showToast('Task deleted');
+}
+
+function toggleSubComplete(subId) {
+  const sub = state.tasks.find(t => t.id === subId);
+  if (!sub) return;
+  sub.status = sub.status === 'completed' ? 'inprogress' : 'completed';
+  saveToStorage();
+  render();
+  openTaskDetail(sub.parentId);
+}
+
+// ADD PROJECT
+function openAddProject() {
+  openModal(`<div class="modal">
+    <div class="modal-header">
+      <div class="modal-header-info"><h2>New Project</h2></div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Project Name *</label>
+        <input id="p-name" class="form-input" placeholder="e.g. TMC Integration Q3…" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Color</label>
+        <div style="display:flex;gap:8px;margin-top:4px">
+          ${PROJECT_DOTS.map((c,i) => `<div onclick="selectProjColor(this,'${c}')" data-color="${c}" style="width:22px;height:22px;border-radius:50%;background:${c};cursor:pointer;border:2px solid transparent;transition:all 0.15s" class="color-dot ${i===0?'sel':''}"></div>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveProject()">Create Project</button>
+    </div>
+  </div>`);
+  document.querySelectorAll('.color-dot')[0].style.borderColor = '#fff';
+}
+
+function selectProjColor(el, color) {
+  document.querySelectorAll('.color-dot').forEach(d => d.style.borderColor = 'transparent');
+  el.style.borderColor = '#fff';
+}
+
+function saveProject() {
+  const name = document.getElementById('p-name').value.trim();
+  if (!name) { document.getElementById('p-name').focus(); return; }
+  const selDot = document.querySelector('.color-dot[style*="border-color: rgb(255"]') || document.querySelector('.color-dot');
+  const color = selDot?.dataset.color || '#3b82f6';
+  const proj = { id: uid(), name, color, createdAt: new Date().toISOString().split('T')[0] };
+  state.projects.push(proj);
+  state.currentProjectId = proj.id;
+  closeModal();
+  saveToStorage();
+  render();
+  showToast('Project created ✓');
+}
+
+// PROFILES
+function openAddProfile(editId=null) {
+  const p = editId ? state.profiles.find(u => u.id === editId) : null;
+  openModal(`<div class="modal">
+    <div class="modal-header">
+      <div class="modal-header-info"><h2>${p ? 'Edit User' : 'Add Team Member'}</h2></div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Full Name *</label>
+          <input id="u-name" class="form-input" value="${p?.name||''}" placeholder="Jane Smith" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Initials *</label>
+          <input id="u-init" class="form-input" value="${p?.initials||''}" placeholder="JS" maxlength="2" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email *</label>
+        <input id="u-email" type="email" class="form-input" value="${p?.email||''}" placeholder="name@company.com" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Organization</label>
+          <input id="u-org" class="form-input" value="${p?.org||''}" placeholder="Spotnana or TMC name" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Access Level</label>
+          <select id="u-access" class="form-select">
+            <option value="full" ${p?.access==='full'?'selected':''}>Full Access</option>
+            <option value="limited" ${p?.access==='limited'?'selected':''}>Limited</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Color</label>
+        <div style="display:flex;gap:8px;margin-top:4px">
+          ${COLORS.map(c => `<div onclick="selectUserColor(this,'${c}')" data-color="${c}" style="width:22px;height:22px;border-radius:50%;background:${c};cursor:pointer;border:2px solid ${p?.color===c?'#fff':'transparent'};transition:all 0.15s" class="ucolor-dot"></div>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      ${p ? `<button class="btn btn-ghost" style="color:#f87171;border-color:rgba(239,68,68,0.3)" onclick="deleteProfile('${p.id}')">Remove</button>` : '<span></span>'}
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveProfile('${editId||''}')">${p ? 'Save' : 'Add User'}</button>
+      </div>
+    </div>
+  </div>`);
+  if (!p) document.querySelectorAll('.ucolor-dot')[0].style.borderColor = '#fff';
+}
+
+function selectUserColor(el, color) {
+  document.querySelectorAll('.ucolor-dot').forEach(d => d.style.borderColor = 'transparent');
+  el.style.borderColor = '#fff';
+}
+
+function saveProfile(editId) {
+  const name = document.getElementById('u-name').value.trim();
+  const email = document.getElementById('u-email').value.trim();
+  if (!name || !email) return;
+  const selDot = [...document.querySelectorAll('.ucolor-dot')].find(d => d.style.borderColor.includes('255'));
+  const color = selDot?.dataset.color || COLORS[0];
+  const prof = {
+    id: editId || uid(),
+    name,
+    email,
+    initials: document.getElementById('u-init').value.trim().toUpperCase() || name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase(),
+    org: document.getElementById('u-org').value.trim(),
+    access: document.getElementById('u-access').value,
+    color
+  };
+  if (editId) {
+    const idx = state.profiles.findIndex(p => p.id === editId);
+    state.profiles[idx] = prof;
+  } else {
+    state.profiles.push(prof);
+  }
+  closeModal();
+  saveToStorage();
+  render();
+  showToast('User saved ✓');
+}
+
+function editProfile(id) { openAddProfile(id); }
+
+function deleteProfile(id) {
+  if (!confirm('Remove this user?')) return;
+  state.profiles = state.profiles.filter(p => p.id !== id);
+  state.tasks.forEach(t => { t.tags = (t.tags||[]).filter(tid => tid !== id); });
+  closeModal();
+  saveToStorage();
+  render();
+}
+
+// FILTER
+function openFilterModal() {
+  openModal(`<div class="modal" style="max-width:360px">
+    <div class="modal-header">
+      <div class="modal-header-info"><h2>Filter Tasks</h2></div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select id="fil-status" class="form-select">
+          <option value="all" ${state.filterStatus==='all'?'selected':''}>All Statuses</option>
+          <option value="new" ${state.filterStatus==='new'?'selected':''}>New</option>
+          <option value="inprogress" ${state.filterStatus==='inprogress'?'selected':''}>In Progress</option>
+          <option value="inreview" ${state.filterStatus==='inreview'?'selected':''}>In Review</option>
+          <option value="completed" ${state.filterStatus==='completed'?'selected':''}>Completed</option>
+          <option value="blocked" ${state.filterStatus==='blocked'?'selected':''}>Blocked</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Responsible</label>
+        <select id="fil-resp" class="form-select">
+          <option value="all" ${state.filterResponsible==='all'?'selected':''}>All</option>
+          <option value="spotnana" ${state.filterResponsible==='spotnana'?'selected':''}>Spotnana</option>
+          <option value="tmc" ${state.filterResponsible==='tmc'?'selected':''}>TMC</option>
+          <option value="both" ${state.filterResponsible==='both'?'selected':''}>Both</option>
+          
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="clearFilters()">Clear</button>
+      <button class="btn btn-primary" onclick="applyFilter()">Apply</button>
+    </div>
+  </div>`);
+}
+
+function applyFilter() {
+  state.filterStatus = document.getElementById('fil-status').value;
+  state.filterResponsible = document.getElementById('fil-resp').value;
+  closeModal();
+  saveToStorage();
+  render();
+}
+function clearFilters() {
+  state.filterStatus = 'all';
+  state.filterResponsible = 'all';
+  closeModal();
+  saveToStorage();
+  render();
+}
+
+// ═══════════════════════════════
+//  INTERACTIONS
+// ═══════════════════════════════
+function toggleExpand(e, taskId) {
+  e.stopPropagation();
+  if (state.expandedTasks.has(taskId)) state.expandedTasks.delete(taskId);
+  else state.expandedTasks.add(taskId);
+  saveToStorage();
+  render();
+}
+
+function switchView(view, el) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+  state.currentView = view;
+  render();
+}
+
+function selectProject(id) {
+  state.currentProjectId = id;
+  state.currentView = 'tasks';
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelector('[data-view="tasks"]').classList.add('active');
+  saveToStorage();
+  render();
+}
+
+// ═══════════════════════════════
+//  TOAST
+// ═══════════════════════════════
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = `<span class="toast-icon">✓</span> ${msg}`;
+  document.getElementById('toast-container').appendChild(t);
+  setTimeout(() => t.remove(), 2500);
+}
+
+// ═══════════════════════════════
+//  INIT
+// ═══════════════════════════════
+if (!loadFromStorage()) seedData();
+render();
+</script>
+</body>
+</html>
