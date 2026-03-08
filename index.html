@@ -7,27 +7,27 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0c0f14;
-    --surface: #141820;
-    --surface2: #1c2230;
-    --surface3: #242d3d;
-    --border: #2a3448;
-    --border2: #3a4a62;
-    --accent: #3b82f6;
-    --accent2: #60a5fa;
-    --accent-glow: rgba(59,130,246,0.15);
-    --green: #22c55e;
-    --yellow: #f59e0b;
-    --red: #ef4444;
-    --purple: #a855f7;
-    --orange: #f97316;
-    --text: #e2e8f0;
-    --text2: #94a3b8;
-    --text3: #64748b;
-    --spotnana: #3b82f6;
-    --tmc: #a855f7;
-    --both: #22c55e;
-    --spotnana-tmc: #22c55e;
+    --bg: #f4f6f9;
+    --surface: #ffffff;
+    --surface2: #f0f2f5;
+    --surface3: #e4e8ef;
+    --border: #e2e6ed;
+    --border2: #c8d0dc;
+    --accent: #2563eb;
+    --accent2: #1d4ed8;
+    --accent-glow: rgba(37,99,235,0.1);
+    --green: #16a34a;
+    --yellow: #d97706;
+    --red: #dc2626;
+    --purple: #7c3aed;
+    --orange: #ea580c;
+    --text: #111827;
+    --text2: #374151;
+    --text3: #6b7280;
+    --spotnana: #2563eb;
+    --tmc: #7c3aed;
+    --both: #16a34a;
+    --spotnana-tmc: #16a34a;
     --radius: 8px;
     --radius2: 12px;
   }
@@ -307,7 +307,7 @@
   .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.7);
+    background: rgba(0,0,0,0.4);
     backdrop-filter: blur(4px);
     z-index: 100;
     display: flex;
@@ -651,43 +651,6 @@ let state = {
 };
 
 // ═══════════════════════════════
-//  PERSISTENCE
-// ═══════════════════════════════
-const STORAGE_KEY = 'spotnana-pm-v1';
-
-function saveToStorage() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({
-      projects: state.projects,
-      tasks: state.tasks,
-      profiles: state.profiles,
-      currentProjectId: state.currentProjectId,
-      currentView: state.currentView,
-      filterStatus: state.filterStatus,
-      filterResponsible: state.filterResponsible,
-      expandedTasks: [...state.expandedTasks],
-    }));
-  } catch(e) { console.warn('Failed to save state', e); }
-}
-
-function loadFromStorage() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return false;
-    const saved = JSON.parse(raw);
-    state.projects = saved.projects || [];
-    state.tasks = saved.tasks || [];
-    state.profiles = saved.profiles || [];
-    state.currentProjectId = saved.currentProjectId || null;
-    state.currentView = saved.currentView || 'tasks';
-    state.filterStatus = saved.filterStatus || 'all';
-    state.filterResponsible = saved.filterResponsible || 'all';
-    state.expandedTasks = new Set(saved.expandedTasks || []);
-    return true;
-  } catch(e) { console.warn('Failed to load state', e); return false; }
-}
-
-// ═══════════════════════════════
 //  SEED DATA
 // ═══════════════════════════════
 function seedData() {
@@ -1013,7 +976,6 @@ function saveTask(editId, parentId) {
     if (parentId) state.expandedTasks.add(parentId);
   }
   closeModal();
-  saveToStorage();
   render();
   showToast('Task saved ✓');
 }
@@ -1120,7 +1082,6 @@ function updateTask(taskId) {
   task.dueDate = document.getElementById('d-due').value;
   task.tags = [...document.querySelectorAll('.tag-option.selected')].map(el => el.dataset.uid);
   closeModal();
-  saveToStorage();
   render();
   showToast('Changes saved ✓');
 }
@@ -1129,7 +1090,6 @@ function deleteTask(taskId) {
   if (!confirm('Delete this task and its subtasks?')) return;
   state.tasks = state.tasks.filter(t => t.id !== taskId && t.parentId !== taskId);
   closeModal();
-  saveToStorage();
   render();
   showToast('Task deleted');
 }
@@ -1138,7 +1098,6 @@ function toggleSubComplete(subId) {
   const sub = state.tasks.find(t => t.id === subId);
   if (!sub) return;
   sub.status = sub.status === 'completed' ? 'inprogress' : 'completed';
-  saveToStorage();
   render();
   openTaskDetail(sub.parentId);
 }
@@ -1184,7 +1143,6 @@ function saveProject() {
   state.projects.push(proj);
   state.currentProjectId = proj.id;
   closeModal();
-  saveToStorage();
   render();
   showToast('Project created ✓');
 }
@@ -1270,7 +1228,6 @@ function saveProfile(editId) {
     state.profiles.push(prof);
   }
   closeModal();
-  saveToStorage();
   render();
   showToast('User saved ✓');
 }
@@ -1282,7 +1239,6 @@ function deleteProfile(id) {
   state.profiles = state.profiles.filter(p => p.id !== id);
   state.tasks.forEach(t => { t.tags = (t.tags||[]).filter(tid => tid !== id); });
   closeModal();
-  saveToStorage();
   render();
 }
 
@@ -1327,14 +1283,12 @@ function applyFilter() {
   state.filterStatus = document.getElementById('fil-status').value;
   state.filterResponsible = document.getElementById('fil-resp').value;
   closeModal();
-  saveToStorage();
   render();
 }
 function clearFilters() {
   state.filterStatus = 'all';
   state.filterResponsible = 'all';
   closeModal();
-  saveToStorage();
   render();
 }
 
@@ -1345,7 +1299,6 @@ function toggleExpand(e, taskId) {
   e.stopPropagation();
   if (state.expandedTasks.has(taskId)) state.expandedTasks.delete(taskId);
   else state.expandedTasks.add(taskId);
-  saveToStorage();
   render();
 }
 
@@ -1361,7 +1314,6 @@ function selectProject(id) {
   state.currentView = 'tasks';
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.querySelector('[data-view="tasks"]').classList.add('active');
-  saveToStorage();
   render();
 }
 
@@ -1379,7 +1331,7 @@ function showToast(msg) {
 // ═══════════════════════════════
 //  INIT
 // ═══════════════════════════════
-if (!loadFromStorage()) seedData();
+seedData();
 render();
 </script>
 </body>
